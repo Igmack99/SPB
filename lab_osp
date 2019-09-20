@@ -1,0 +1,47 @@
+R_PATH="$HOME/lab1_err"
+
+while [ "$menu" != 0 ]
+do
+    echo '1. Напечатать имя текущего каталога'
+    echo '2. Сменить текущий каталог'
+    echo '3. Напечатать содержимое текущего каталога'
+    echo '4. Создать прямую ссылку на файл'
+    echo '5. Удалить символическую ссылку на файл'
+    echo '6. Выйти из программы'
+    echo 'Выберите пункт меню:'
+
+    read menu || break
+    case "$menu" in
+        1)
+            pwd 2>>"$ERR_PATH" || echo 'Ошибка' 1>&2
+        ;;
+	2)  echo "Введите название каталога для перехода"
+	    read cd_path
+	    cd "$cd_path" 2>>"$ERR_PATH" || echo 'Ошибочка вышла' 1>&2
+        ;;
+        3)
+            ls 2>>"$ERR_PATH" || echo 'Ошибочка вышла' 1>&2
+       	;;
+        4)  
+            echo "Введите абсолютный адрес"
+	    read file_1
+	    echo "Введите адрес создаваемой символической ссылки"
+	    read file_2
+	    ln $file_1 $file_2
+	    2>>"$ERR_PATH" || echo 'Ошибочка вышла' 1>&2;;
+	5)
+	   echo "Введите название символической ссылки"
+	   read link_name
+	   echo "rm: remove $link_name (y/n)?>"
+	   read confirm
+	   if [ $confirm = "y" ]
+	   then
+	   rm "$link_name" 2>>"$ERR_PATH" || echo 'Ошибочка вышла'
+	   fi
+	   ;;
+	6)
+           echo 'Adios amigo!'
+           menu=0
+        ;;
+	esac
+done
